@@ -1,0 +1,7 @@
+{
+  "name": "sort-lab",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
