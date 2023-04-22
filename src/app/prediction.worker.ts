@@ -35,9 +35,9 @@ tf.loadGraphModel(environment.material_model_path)
 async function normalizarImagen(img:tf.Tensor3D) {
   let imgDividida = img.div(tf.scalar(255));
 
-  //valores de media del dataset ImageNet usado en el entrenamietno del modelo
+  //valores de media del dataset ImageNet usado en el entrenamiento del modelo
   let mediaRGB = {red: 0.485, green: 0.456, blue: 0.406}
-  //valores de desviacion estandard del dataset ImageNet usado en el entrenamietno del modelo
+  //valores de desviacion estandar del dataset ImageNet usado en el entrenamiento del modelo
   let desviacionRGB = {red: 0.229, green: 0.224, blue: 0.225}
 
   let indices = [tf.tensor1d([0],'int32'), tf.tensor1d([1],'int32'), tf.tensor1d([2],'int32')];
