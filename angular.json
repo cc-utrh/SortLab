@@ -39,8 +39,10 @@
             "styles": ["src/theme/variables.scss", "src/global.scss"],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "long"
-            ]
+              "long",
+              "seedrandom"
+            ],
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -120,7 +122,8 @@
               }
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
-            "scripts": []
+            "scripts": [],
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "ci": {

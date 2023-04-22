@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import * as tf from '@tensorflow/tfjs';
 
 @Component({
   selector: 'app-home',
@@ -9,20 +8,24 @@ import * as tf from '@tensorflow/tfjs';
   standalone: true,
   imports: [IonicModule],
 })
-export class HomePage implements OnInit{
-  public modelo: any
+export class HomePage {
+  public result="";
+  public modelo:any;
   public titulo = "Prueba carga modelo";
   public prediccion = "Ninguna todavia";
+  public worker;
 
-  constructor() {}
+  constructor(public ngZone: NgZone) {
 
-  ngOnInit(): void {
-    this.cargarModelo();
+    if (typeof Worker !== 'undefined') {
+      // Create a new worker
+      this.worker = new Worker(new URL('../prediction.worker', import.meta.url));
+    }
   }
 
-  async cargarModelo(){
-    this.modelo = await tf.loadGraphModel('../assets/material_model/model.json');
-    this.titulo="Modelo cargado!";
+  public prediceWebWorker(){
+    if(this.worker!=undefined){
+      this.worker.postMessage("Pido predicción desde la app")
+    }
   }
-
 }
