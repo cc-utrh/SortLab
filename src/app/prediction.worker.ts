@@ -33,40 +33,37 @@ tf.loadGraphModel(environment.material_model_path)
   })
 
 async function normalizarImagen(img:tf.Tensor3D) {
-  //mean of natural image
-  let meanRgb = {  red : 0.485,  green: 0.456,  blue: 0.406 }
-  //standard deviation of natural image
-  let stdRgb = { red: 0.229,  green: 0.224,  blue: 0.225 }
+  let imgDividida = img.div(tf.scalar(255));
 
-  let indices = [
-              tf.tensor1d([0], "int32"),
-              tf.tensor1d([1], "int32"),
-              tf.tensor1d([2], "int32")
-  ];
+  //valores de media del dataset ImageNet usado en el entrenamietno del modelo
+  let mediaRGB = {red: 0.485, green: 0.456, blue: 0.406}
+  //valores de desviacion estandard del dataset ImageNet usado en el entrenamietno del modelo
+  let desviacionRGB = {red: 0.229, green: 0.224, blue: 0.225}
 
-  /* sperating tensor channelwise and applying normalization to each chanel seperately */
-  let centeredRgb = {
-      red: tf.gather(img,indices[0],2)
-              .sub(tf.scalar(meanRgb.red))
-              .div(tf.scalar(stdRgb.red))
+  let indices = [tf.tensor1d([0],'int32'), tf.tensor1d([1],'int32'), tf.tensor1d([2],'int32')];
+
+  //separar tensor en 3 canales y normalizar por separado
+  let canalesNormalizados = {
+      red: tf.gather(imgDividida,indices[0],2)
+              .sub(tf.scalar(mediaRGB.red))
+              .div(tf.scalar(desviacionRGB.red))
               .reshape([imgHeight,imgWidth]),
 
-      green: tf.gather(img,indices[1],2)
-              .sub(tf.scalar(meanRgb.green))
-              .div(tf.scalar(stdRgb.green))
+      green: tf.gather(imgDividida,indices[1],2)
+              .sub(tf.scalar(mediaRGB.green))
+              .div(tf.scalar(desviacionRGB.green))
               .reshape([imgHeight,imgWidth]),
 
-      blue: tf.gather(img,indices[2],2)
-              .sub(tf.scalar(meanRgb.blue))
-              .div(tf.scalar(stdRgb.blue))
+      blue: tf.gather(imgDividida,indices[2],2)
+              .sub(tf.scalar(mediaRGB.blue))
+              .div(tf.scalar(desviacionRGB.blue))
               .reshape([imgHeight,imgWidth]),
   }
 
-  /* combining seperate normalized channels*/
-  let processedImg = tf.stack([
-    centeredRgb.red, centeredRgb.green, centeredRgb.blue
-  ]);
-  return processedImg;
+  //combinar canales normalizados
+  let imgNormalizada = tf.stack([canalesNormalizados.red, canalesNormalizados.green, canalesNormalizados.blue]);
+
+  return imgNormalizada;
 }
 
 async function imagenPreprocesada(){
@@ -82,18 +79,19 @@ async function imagenPreprocesada(){
   let img = tf.browser.fromPixels(imageBitmap, 3);
 
   //redimensionarla
-  img = tf.image.resizeBilinear(img, [imgHeight, imgWidth]).div(tf.scalar(255));
+  img = tf.image.resizeBilinear(img, [imgHeight, imgWidth]);
 
-  let processedImg= await normalizarImagen(img);
+  //normalizarla con media de cero y varianza de uno
+  let processedImg = await normalizarImagen(img);
 
-  //modifico la forma del tensor para que coincida con [1, 512, 1024, 3]
+  //modifico la forma del tensor para que coincida con [1, h, w, 3]
   let transposedTensor = tf.transpose(processedImg, [1, 2, 0]);
   let reshapedTensor = tf.expandDims(transposedTensor, 0);
 
   //compruebo que tiene la forma correcta
   console.log(reshapedTensor.shape);
 
- return reshapedTensor;
+  return reshapedTensor;
 }
 
 async function predict(){
