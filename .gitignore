@@ -69,3 +69,5 @@ Thumbs.db
 
 #Nuevo
 src/assets/sample_images/
+android
+src/environments/

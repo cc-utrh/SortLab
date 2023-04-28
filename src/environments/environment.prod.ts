@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  material_model_path:"../assets/material_model/model.json"
 };

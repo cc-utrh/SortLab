@@ -24,3 +24,42 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+
+@font-face {
+  font-family: 'Rubik';
+  src: url('./assets/fonts/rubik/Rubik-VariableFont_wght.ttf');
+}
+
+:root {
+	--ion-color-principal: #028178;
+	--ion-color-principal-rgb: 2,129,120;
+	--ion-color-principal-contrast: #ffffff;
+	--ion-color-principal-contrast-rgb: 255,255,255;
+	--ion-color-principal-shade: #02726a;
+	--ion-color-principal-tint: #1b8e86;
+
+  --ion-color-secundario: #d3ede8;
+	--ion-color-secundario-rgb: 211,237,232;
+	--ion-color-secundario-contrast: #000000;
+	--ion-color-secundario-contrast-rgb: 0,0,0;
+	--ion-color-secundario-shade: #bad1cc;
+	--ion-color-secundario-tint: #d7efea;
+}
+
+.ion-color-principal {
+	--ion-color-base: var(--ion-color-principal);
+	--ion-color-base-rgb: var(--ion-color-principal-rgb);
+	--ion-color-contrast: var(--ion-color-principal-contrast);
+	--ion-color-contrast-rgb: var(--ion-color-principal-contrast-rgb);
+	--ion-color-shade: var(--ion-color-principal-shade);
+	--ion-color-tint: var(--ion-color-principal-tint);
+}
+
+.ion-color-secundario {
+	--ion-color-base: var(--ion-color-secundario);
+	--ion-color-base-rgb: var(--ion-color-secundario-rgb);
+	--ion-color-contrast: var(--ion-color-secundario-contrast);
+	--ion-color-contrast-rgb: var(--ion-color-secundario-contrast-rgb);
+	--ion-color-shade: var(--ion-color-secundario-shade);
+	--ion-color-tint: var(--ion-color-secundario-tint);
+}

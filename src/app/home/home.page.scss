@@ -1,27 +1,111 @@
-#container {
-  text-align: center;
+ion-content {
+  font-family: 'Rubik' !important;
+  // background-color: var(--ion-color-secundario);
+  --background: transparent !important;
+}
 
+#cameraPreview {
+  --background: transparent !important;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 0;
+}
+
+ion-button {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  z-index: 20;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+#help {
+  top: 30px;
+  left: calc(50% + 125px);
+  width: 50px;
+  height: 50px;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+#capture {
+  bottom: 50px;
+  left: calc(50% - 25px);
+  width: 50px;
+  height: 50px;
 }
 
-#container a {
-  text-decoration: none;
+#flash {
+  top: 30px;
+  left: calc(50% - 175px);
+  width: 50px;
+  height: 50px;
 }
+
+#flash::part(native), #capture::part(native), #help::part(native) {
+  border-radius: 30px;
+}
+
+.capture-box {
+  border: 1px solid white;
+  border-radius: 10px;
+  box-shadow: 0 0 0 100vmax rgba(0,0,0,0.5);
+  display: block;
+  left: 50%;
+  position: absolute;
+  top:50%;
+  transform: translate(-50%, -50%);
+  //35% del input del modelo pero mantiene el ratio
+  width: 358.4px;
+  height: 179.2px;
+  z-index: 10;
+}
+
+.aviso-permiso {
+  display: block;
+  left: 50%;
+  position: absolute;
+  top:55%;
+  transform: translate(-50%, -50%);
+  color: white;
+  //35% del input del modelo pero mantiene el ratio
+  width: 300px;
+  height: 150px;
+  z-index: 20;
+}
+
+.texto-capture-box {
+  display: block;
+  left: 50%;
+  position: absolute;
+  top: 61%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  color: white;
+  z-index: 20;
+}
+
+// #container {
+//   text-align: center;
+
+//   position: absolute;
+//   left: 0;
+//   right: 0;
+//   top: 50%;
+//   transform: translateY(-50%);
+// }
+
+// #container strong {
+//   font-size: 20px;
+//   line-height: 26px;
+// }
+
+// #container p {
+//   font-size: 16px;
+//   line-height: 22px;
+
+//   color: #8c8c8c;
+
+//   margin: 0;
+// }
+
+// #container a {
+//   text-decoration: none;
+// }
