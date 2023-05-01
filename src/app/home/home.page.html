@@ -13,7 +13,7 @@
       </ion-button>
 
       <p *ngIf="!cameraActive" class="aviso-permiso">SortLab necesita acceder a tu cámara. Habilita el permiso desde los ajustes</p>
-      <p class="texto-capture-box">cuadra el residuo dentro del rectángulo</p>
+      <p class="texto-capture-box">centra el residuo en el rectángulo</p>
 
       <ion-button [disabled]="!cameraActive" (click)="captureImage()" color="principal" expand="block" id="capture">
         <ion-icon name="camera" slot="icon-only" ></ion-icon>

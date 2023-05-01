@@ -88,13 +88,15 @@ export class HomePage {
       parent: 'cameraPreview',
       toBack: true,
       rotateWhenOrientationChanged: false,
-      lockAndroidOrientation: true
+      lockAndroidOrientation: true,
+      enableZoom: true
     };
 
     try {
       console.log('launching camera');
       this.cameraActive = true;
       await CameraPreview.start(cameraPreviewOptions);
+      document.querySelector('body')?.classList.add('camera-active');
     } catch (err) {
       console.log('Error iniciando preview de la camara: ', err);
       console.log('activa: '+this.cameraActive);
@@ -147,6 +149,7 @@ export class HomePage {
       if(this.cameraActive){
         await CameraPreview.stop();
         this.cameraActive = false;
+        document.querySelector('body')?.classList.remove('camera-active');
       }
 
     } catch (error) {
@@ -180,9 +183,9 @@ export class HomePage {
 
   ngOnDestroy(){
     console.warn("🚀 ~ file: home.page.ts:283 ~ ngOnDestroy ~ ngOnDestroy:")
+    this.resumeListener.unsubscribe();
 
     // this.stopCamera();
-    this.resumeListener.unsubscribe();
     // this.pauseListener.unsubscribe();
   }
 

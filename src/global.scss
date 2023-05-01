@@ -30,6 +30,11 @@
   src: url('./assets/fonts/rubik/Rubik-VariableFont_wght.ttf');
 }
 
+body.camera-active {
+  --background: transparent;
+  --ion-background-color: transparent;
+}
+
 :root {
 	--ion-color-principal: #028178;
 	--ion-color-principal-rgb: 2,129,120;
