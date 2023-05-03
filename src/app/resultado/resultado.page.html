@@ -1,0 +1,25 @@
+<!-- <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>resultado</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content [fullscreen]="true">
+  <ion-button (click)="goBack()" color="principal" expand="block" id="close">
+    <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+  </ion-button>
+
+  <!-- spinner -->
+  <div *ngIf="confirmed" class="loading">
+    <div class="spinner-border">
+      <span id="spinner"></span>
+    </div>
+  </div>
+
+  <ion-button *ngIf="!confirmed" (click)="confirmImage()" color="principal" expand="block" id="confirm">
+    <ion-icon name="checkmark-sharp" slot="icon-only" ></ion-icon>
+  </ion-button>
+
+  <img [src]="fotoCapturada" id="fotoCapturada">
+  <div>{{resultado}}</div>
+</ion-content>

@@ -1,11 +1,12 @@
-import { AfterViewInit, Component, NgZone, OnDestroy, Optional } from '@angular/core';
+import { AfterViewInit, Component, NgZone, Optional } from '@angular/core';
 import { IonicModule, Platform, IonRouterOutlet } from '@ionic/angular';
-import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions} from '@capacitor-community/camera-preview';
-import { Camera, PermissionStatus, CameraPermissionState, CameraPluginPermissions } from '@capacitor/camera';
-// import { PermissionsPlugin } from '@capacitor/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { Camera } from '@capacitor/camera';
+import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions} from '@capacitor-community/camera-preview';
 import { App } from '@capacitor/app';
+import { PredictionService } from '../services/prediction.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +31,7 @@ export class HomePage {
   resumeListener: Subscription = new Subscription();
   // pauseListener: Subscription = new Subscription();
 
-  constructor(public ngZone: NgZone, private platform: Platform,  @Optional() private routerOutlet?: IonRouterOutlet) {
+  constructor(public ngZone: NgZone, private predictionService:PredictionService, private platform: Platform, private router:Router, @Optional() private routerOutlet?: IonRouterOutlet) {
 
     this.permisoActual = '';
 
@@ -58,8 +59,12 @@ export class HomePage {
 
   }
 
+  ngOnInit() {
+    this.predictionService.initialize();
+  }
+
   async ngAfterViewInit(){
-    console.log("🚀 ~ file: home.page.ts:53 ~ HomePage ~ ngOnInit:")
+    console.log("🚀 ~ file: home.page.ts:68 ~ HomePage ~ ngAfterViewInit:")
     let permissions = await this.comprobarPermisos();
 
     try {
@@ -76,6 +81,8 @@ export class HomePage {
         this.permisoActual = answer.camera
       }
 
+      // this.predictionService.initialize();
+
     } catch (error) {
       console.error(error);
     }
@@ -89,7 +96,8 @@ export class HomePage {
       toBack: true,
       rotateWhenOrientationChanged: false,
       lockAndroidOrientation: true,
-      enableZoom: true
+      enableZoom: true,
+      enableHighResolution: true
     };
 
     try {
@@ -158,15 +166,23 @@ export class HomePage {
   }
 
   async captureImage() {
-
+    // try {
+    //   if(this.predictionService.checkModels()){
     const cameraPreviewPictureOptions: CameraPreviewPictureOptions = {
-      quality: 90
+      quality: 100
     };
     const result = await CameraPreview.capture(cameraPreviewPictureOptions);
+    //no se si necesito esto o no
     this.image = `data:image/jpeg;base64,${result.value}`;
-    console.log(this.image);
+    // console.log(this.image);
 
+    await this.predictionService.setFoto(this.image);
+    this.router.navigate(['/resultado']);
   }
+    // } catch (error) {
+    //   console.log("Error capturando la imagen:", error)
+    // }
+
     // this.prediceWebWorker(this.image)
 
 
