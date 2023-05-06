@@ -59,9 +59,9 @@ export class HomePage {
 
   }
 
-  ngOnInit() {
-    this.predictionService.initialize();
-  }
+  // ngOnInit() {
+  //   this.predictionService.initialize();
+  // }
 
   async ngAfterViewInit(){
     console.log("🚀 ~ file: home.page.ts:68 ~ HomePage ~ ngAfterViewInit:")

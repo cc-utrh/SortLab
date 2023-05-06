@@ -24,35 +24,55 @@ export class PredictionService {
 
   constructor() {}
 
-  async initialize() {
+  // async initialize() {
+  //   tf.env().set('WEBGL_PACK', false);
+  //   // tf.env().set('WEBGL_CONV_IM2COL', false);
+
+  //   const [model1, model2] = await Promise.all([
+  //     tf.loadGraphModel(environment.material_form_model_path).catch(error => {
+  //       console.error("Error al cargar material form: ", error);
+  //       return null;
+  //     }),
+  //     tf.loadGraphModel(environment.material_model_path).catch(error => {
+  //       console.error("Error al cargar material model: ", error);
+  //       return null;
+  //     })
+  //   ])
+
+
+  //   if(model1){
+  //     this.materialFormModel = model1;
+  //     const inputShape = model1.inputs[0].shape;
+  //     if (inputShape) {
+  //       this.imgHeight = inputShape[1];
+  //       this.imgWidth = inputShape[2];
+  //     }
+  //     console.log("Se ha cargado material form model!");
+  //   }
+
+  //   if(model2){
+  //     this.materialModel = model2;
+  //     console.log("Se ha cargado material model!");
+  //   }
+
+  //   console.log('Al cargar el modelo numTensors : ' + tf.memory().numTensors);
+  // }
+
+  async cargarModelo(modelPath: string) {
     tf.env().set('WEBGL_PACK', false);
-    tf.env().set('WEBGL_CONV_IM2COL', false);
 
-    const [model1, model2] = await Promise.all([
-      tf.loadGraphModel(environment.material_form_model_path).catch(error => {
-        console.error("Error al cargar material form: ", error);
-        return null;
-      }),
-      tf.loadGraphModel(environment.material_model_path).catch(error => {
-        console.error("Error al cargar material model: ", error);
-        return null;
-      })
-    ])
-
-    if(model1){
-      this.materialFormModel = model1;
-      const inputShape = model1.inputs[0].shape;
-      if (inputShape) {
-        this.imgHeight = inputShape[1];
-        this.imgWidth = inputShape[2];
-      }
-      console.log("Se ha cargado material form model!");
+    const model = await tf.loadGraphModel(modelPath);
+    console.log(`El modelo de ${modelPath} se ha cargado`);
+    const inputShape = model.inputs[0].shape;
+    if (inputShape) {
+      this.imgHeight = inputShape[1];
+      this.imgWidth = inputShape[2];
     }
 
-    if(model2){
-      this.materialModel = model2;
-      console.log("Se ha cargado material model!");
-    }
+    console.log('Al cargar el modelo numTensors : ' + tf.memory().numTensors);
+    console.log('Al cargar el modelo numBytes : ' + tf.memory().numBytes);
+
+    return model;
   }
 
   async setFoto(fotoCapturada:String) {
@@ -72,37 +92,40 @@ export class PredictionService {
   }
 
   async normalizarImagen(img:tf.Tensor3D) {
-    let imgDividida = img.div(tf.scalar(255));
+    let normalizadaFinal = await tf.tidy(()=> {
+      let imgDividida = img.div(tf.scalar(255));
 
-    //valores de media del dataset ImageNet usado en el entrenamiento del modelo
-    let mediaRGB = {red: 0.485, green: 0.456, blue: 0.406}
-    //valores de desviacion estandar del dataset ImageNet usado en el entrenamiento del modelo
-    let desviacionRGB = {red: 0.229, green: 0.224, blue: 0.225}
+      //valores de media del dataset ImageNet usado en el entrenamiento del modelo
+      let mediaRGB = {red: 0.485, green: 0.456, blue: 0.406}
+      //valores de desviacion estandar del dataset ImageNet usado en el entrenamiento del modelo
+      let desviacionRGB = {red: 0.229, green: 0.224, blue: 0.225}
 
-    let indices = [tf.tensor1d([0],'int32'), tf.tensor1d([1],'int32'), tf.tensor1d([2],'int32')];
+      let indices = [tf.tensor1d([0],'int32'), tf.tensor1d([1],'int32'), tf.tensor1d([2],'int32')];
 
-    //separar tensor en 3 canales y normalizar por separado
-    let canalesNormalizados = {
-        red: tf.gather(imgDividida,indices[0],2)
-                .sub(tf.scalar(mediaRGB.red))
-                .div(tf.scalar(desviacionRGB.red))
-                .reshape([this.imgHeight,this.imgWidth]),
+      //separar tensor en 3 canales y normalizar por separado
+      let canalesNormalizados = {
+          red: tf.gather(imgDividida,indices[0],2)
+                  .sub(tf.scalar(mediaRGB.red))
+                  .div(tf.scalar(desviacionRGB.red))
+                  .reshape([this.imgHeight,this.imgWidth]),
 
-        green: tf.gather(imgDividida,indices[1],2)
-                .sub(tf.scalar(mediaRGB.green))
-                .div(tf.scalar(desviacionRGB.green))
-                .reshape([this.imgHeight,this.imgWidth]),
+          green: tf.gather(imgDividida,indices[1],2)
+                  .sub(tf.scalar(mediaRGB.green))
+                  .div(tf.scalar(desviacionRGB.green))
+                  .reshape([this.imgHeight,this.imgWidth]),
 
-        blue: tf.gather(imgDividida,indices[2],2)
-                .sub(tf.scalar(mediaRGB.blue))
-                .div(tf.scalar(desviacionRGB.blue))
-                .reshape([this.imgHeight,this.imgWidth]),
-    }
+          blue: tf.gather(imgDividida,indices[2],2)
+                  .sub(tf.scalar(mediaRGB.blue))
+                  .div(tf.scalar(desviacionRGB.blue))
+                  .reshape([this.imgHeight,this.imgWidth]),
+      }
 
-    //combinar canales normalizados
-    let imgNormalizada = tf.stack([canalesNormalizados.red, canalesNormalizados.green, canalesNormalizados.blue]);
+      //combinar canales normalizados
+      let imgNormalizada = tf.stack([canalesNormalizados.red, canalesNormalizados.green, canalesNormalizados.blue]);
 
-    return imgNormalizada;
+      return imgNormalizada;
+    });
+    return normalizadaFinal;
   }
 
   // async imagenPreprocesada() {
@@ -141,70 +164,117 @@ export class PredictionService {
   // }
 
   async imagenPreprocesada() {
-    console.log("🚀 ~ file: prediction.service.ts:109 ~ PredictionService ~ imagenPreprocesada ~ imagenPreprocesada:");
+    let finalImageTensor = await tf.tidy(() => {
+      console.log("🚀 ~ file: prediction.service.ts:109 ~ PredictionService ~ imagenPreprocesada ~ imagenPreprocesada:");
 
-    //cargar la imagen como elemnento de html
-    let response = document.getElementById('fotoCapturada') as HTMLImageElement;
+      //cargar la imagen como elemnento de html
+      let response = document.getElementById('fotoCapturada') as HTMLImageElement;
 
-    // Create a tensor from the image data
-    let img = tf.browser.fromPixels(response, 3);
+      // Create a tensor from the image data
+      let img = tf.browser.fromPixels(response, 3);
 
-    // Get the height and width of the tensor
-    let [height, width] = img.shape.slice(0, 2);
+      // Get the height and width of the tensor
+      let [height, width] = img.shape.slice(0, 2);
 
-    console.log(`Tengo la imagen de tamaño H x W: ${height} x ${width}`);
+      console.log(`Tengo la imagen de tamaño H x W: ${height} x ${width}`);
 
-    //redimensionarla
-    img = tf.image.resizeBilinear(img, [this.imgHeight, this.imgWidth]);
+      //redimensionarla
+      img = tf.image.resizeBilinear(img, [this.imgHeight, this.imgWidth]);
 
-    //normalizarla con media de cero y varianza de uno
-    let processedImg = await this.normalizarImagen(img);
+      //normalizarla con media de cero y varianza de uno
+      let imgDividida = img.div(tf.scalar(255));
 
-    //modifico la forma del tensor para que coincida con [1, h, w, 3]
-    let transposedTensor = tf.transpose(processedImg, [1, 2, 0]);
-    let reshapedTensor = tf.expandDims(transposedTensor, 0);
+      //valores de media del dataset ImageNet usado en el entrenamiento del modelo
+      let mediaRGB = {red: 0.485, green: 0.456, blue: 0.406}
+      //valores de desviacion estandar del dataset ImageNet usado en el entrenamiento del modelo
+      let desviacionRGB = {red: 0.229, green: 0.224, blue: 0.225}
 
-    //compruebo que tiene la forma correcta
-    console.log(reshapedTensor.shape);
+      let indices = [tf.tensor1d([0],'int32'), tf.tensor1d([1],'int32'), tf.tensor1d([2],'int32')];
 
-    return reshapedTensor;
+      //separar tensor en 3 canales y normalizar por separado
+      let canalesNormalizados = {
+          red: tf.gather(imgDividida,indices[0],2)
+                  .sub(tf.scalar(mediaRGB.red))
+                  .div(tf.scalar(desviacionRGB.red))
+                  .reshape([this.imgHeight,this.imgWidth]),
+
+          green: tf.gather(imgDividida,indices[1],2)
+                  .sub(tf.scalar(mediaRGB.green))
+                  .div(tf.scalar(desviacionRGB.green))
+                  .reshape([this.imgHeight,this.imgWidth]),
+
+          blue: tf.gather(imgDividida,indices[2],2)
+                  .sub(tf.scalar(mediaRGB.blue))
+                  .div(tf.scalar(desviacionRGB.blue))
+                  .reshape([this.imgHeight,this.imgWidth]),
+      }
+
+      //combinar canales normalizados
+      let imgNormalizada = tf.stack([canalesNormalizados.red, canalesNormalizados.green, canalesNormalizados.blue]);
+
+      //modifico la forma del tensor para que coincida con [1, h, w, 3]
+      let transposedTensor = tf.transpose(imgNormalizada, [1, 2, 0]);
+      let reshapedTensor = tf.expandDims(transposedTensor, 0);
+
+      //compruebo que tiene la forma correcta
+      // console.log(reshapedTensor.shape);
+
+      return reshapedTensor;
+    });
+    return finalImageTensor;
   }
 
   async predict() {
-    console.log("🚀 ~ file: prediction.service.ts:141 ~ PredictionService ~ predict ~ predict:")
-
+      console.log("🚀 ~ file: prediction.service.ts:141 ~ PredictionService ~ predict ~ predict:");
     try{
+      if(!this.materialFormModel){
+        this.materialFormModel = await this.cargarModelo(environment.material_form_model_path);
+      }
+
       let finalImageTensor = await this.imagenPreprocesada();
       console.log("🚀 ~ file: prediction.service.ts:139 ~ PredictionService ~ predict ~ finalImageTensor:", finalImageTensor);
 
-      console.log('Voy a calcular el resultado con el primer modelo');
-      const resultado = await this.materialFormModel.executeAsync(finalImageTensor) as tf.Tensor[];
+      console.log('Calculo el resultado con el primer modelo');
+      const resultadoForma = await this.materialFormModel.executeAsync(finalImageTensor) as tf.Tensor[];
 
       //TODO: Buscar si hay diferencia entre data y array
       // const image_info = await resultado[0].data();
       // const detection_boxes = await resultado[1].data();
       // const detection_masks = await resultado[2].data();
-      const num_detections = await resultado[3].array();
-      const detection_scores = await resultado[4].array();
-      const detection_classes = await resultado[5].array();
+      const num_detectionsF = await resultadoForma[3].array();
+      const detection_scoresF = await resultadoForma[4].array();
+      const detection_classesF = await resultadoForma[5].array();
 
       // console.log(resultado[5].array());
       // resultado[5].array().then(data => console.log('Detection classes como array: '+data));
 
       // console.log('Image info: '+image_info);
-      console.log('Detection Scores: '+detection_scores);
+      console.log('Detection Scores: '+detection_scoresF);
       // console.log('Detection Masks: '+detection_masks);
-      console.log('Detection classes: '+detection_classes);
+      console.log('Detection classes: '+detection_classesF);
       // console.log('Detection boxes: '+detection_boxes);
-      console.log('Num detections: '+num_detections);
+      console.log('Num detections: '+num_detectionsF);
 
-      resultado.map((t: { dispose: () => any; }) => t.dispose());
+      console.log('Antes del dispose numTensors : ' + tf.memory().numTensors);
+      console.log('Antes del dispose numBytes : ' + tf.memory().numBytes);
+
+      resultadoForma.map((t: { dispose: () => any; }) => t.dispose());
+
+      finalImageTensor.dispose();
+      tf.dispose(resultadoForma);
+      tf.disposeVariables();
+      // this.materialFormModel.dispose();
+      // console.log("🚀 ~ file: prediction.service.ts:266 ~ PredictionService ~ predict ~ this.materialFormModel:", this.materialFormModel)
 
       tf.nextFrame();
+      // this.materialModel.dispose();
+      console.log('Al hacer el dispose numTensors : ' + tf.memory().numTensors);
+      console.log('Al hacer el dispose numBytes : ' + tf.memory().numBytes);
 
     }catch(error){
       console.log("Error al ejecutar el modelo", error);
     }
+
   }
 
 
