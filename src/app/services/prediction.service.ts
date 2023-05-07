@@ -60,12 +60,13 @@ export class PredictionService {
 
   async cargarModelo(modelPath: string) {
     console.log("🚀 ~ file: prediction.service.ts:62 ~ PredictionService ~ cargarModelo ~ modelPath:", modelPath)
-    // tf.env().set('WEBGL_PACK', false);
+    tf.env().set('WEBGL_PACK', false);
     try {
       console.log("🚀 ~ file: prediction.service.ts:62 ~ PredictionService ~ cargarModelo ~ cargarModelo:")
 
       const model = await tf.loadGraphModel(modelPath);
       console.log(`El modelo de ${modelPath} se ha cargado`);
+
       const inputShape = model.inputs[0].shape;
       if (inputShape) {
         this.imgHeight = inputShape[1];
@@ -98,42 +99,42 @@ export class PredictionService {
     return cargados;
   }
 
-  async normalizarImagen(img:tf.Tensor3D) {
-    let normalizadaFinal = await tf.tidy(()=> {
-      let imgDividida = img.div(tf.scalar(255));
+  // async normalizarImagen(img:tf.Tensor3D) {
+  //   let normalizadaFinal = await tf.tidy(()=> {
+  //     let imgDividida = img.div(tf.scalar(255));
 
-      //valores de media del dataset ImageNet usado en el entrenamiento del modelo
-      let mediaRGB = {red: 0.485, green: 0.456, blue: 0.406}
-      //valores de desviacion estandar del dataset ImageNet usado en el entrenamiento del modelo
-      let desviacionRGB = {red: 0.229, green: 0.224, blue: 0.225}
+  //     //valores de media del dataset ImageNet usado en el entrenamiento del modelo
+  //     let mediaRGB = {red: 0.485, green: 0.456, blue: 0.406}
+  //     //valores de desviacion estandar del dataset ImageNet usado en el entrenamiento del modelo
+  //     let desviacionRGB = {red: 0.229, green: 0.224, blue: 0.225}
 
-      let indices = [tf.tensor1d([0],'int32'), tf.tensor1d([1],'int32'), tf.tensor1d([2],'int32')];
+  //     let indices = [tf.tensor1d([0],'int32'), tf.tensor1d([1],'int32'), tf.tensor1d([2],'int32')];
 
-      //separar tensor en 3 canales y normalizar por separado
-      let canalesNormalizados = {
-          red: tf.gather(imgDividida,indices[0],2)
-                  .sub(tf.scalar(mediaRGB.red))
-                  .div(tf.scalar(desviacionRGB.red))
-                  .reshape([this.imgHeight,this.imgWidth]),
+  //     //separar tensor en 3 canales y normalizar por separado
+  //     let canalesNormalizados = {
+  //         red: tf.gather(imgDividida,indices[0],2)
+  //                 .sub(tf.scalar(mediaRGB.red))
+  //                 .div(tf.scalar(desviacionRGB.red))
+  //                 .reshape([this.imgHeight,this.imgWidth]),
 
-          green: tf.gather(imgDividida,indices[1],2)
-                  .sub(tf.scalar(mediaRGB.green))
-                  .div(tf.scalar(desviacionRGB.green))
-                  .reshape([this.imgHeight,this.imgWidth]),
+  //         green: tf.gather(imgDividida,indices[1],2)
+  //                 .sub(tf.scalar(mediaRGB.green))
+  //                 .div(tf.scalar(desviacionRGB.green))
+  //                 .reshape([this.imgHeight,this.imgWidth]),
 
-          blue: tf.gather(imgDividida,indices[2],2)
-                  .sub(tf.scalar(mediaRGB.blue))
-                  .div(tf.scalar(desviacionRGB.blue))
-                  .reshape([this.imgHeight,this.imgWidth]),
-      }
+  //         blue: tf.gather(imgDividida,indices[2],2)
+  //                 .sub(tf.scalar(mediaRGB.blue))
+  //                 .div(tf.scalar(desviacionRGB.blue))
+  //                 .reshape([this.imgHeight,this.imgWidth]),
+  //     }
 
-      //combinar canales normalizados
-      let imgNormalizada = tf.stack([canalesNormalizados.red, canalesNormalizados.green, canalesNormalizados.blue]);
+  //     //combinar canales normalizados
+  //     let imgNormalizada = tf.stack([canalesNormalizados.red, canalesNormalizados.green, canalesNormalizados.blue]);
 
-      return imgNormalizada;
-    });
-    return normalizadaFinal;
-  }
+  //     return imgNormalizada;
+  //   });
+  //   return normalizadaFinal;
+  // }
 
   // async imagenPreprocesada() {
   //   console.log("🚀 ~ file: prediction.service.ts:109 ~ PredictionService ~ imagenPreprocesada ~ imagenPreprocesada:")
@@ -239,7 +240,6 @@ export class PredictionService {
         let  materialForm = await this.cargarModelo(environment.material_form_model_path);
         if(materialForm){
           this.materialFormModel = materialForm;
-          materialForm.dispose();
         }
       }
 
@@ -248,6 +248,7 @@ export class PredictionService {
 
       console.log('Calculo el resultado con el primer modelo');
       const resultadoForma = await this.materialFormModel.executeAsync(finalImageTensor) as tf.Tensor[];
+      console.log("🚀 ~ file: prediction.service.ts:251 ~ PredictionService ~ predict ~ resultadoForma:", resultadoForma)
 
       //TODO: Buscar si hay diferencia entre data y array
       // const image_info = await resultado[0].data();

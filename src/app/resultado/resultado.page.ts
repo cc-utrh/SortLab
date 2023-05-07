@@ -69,6 +69,7 @@ export class ResultadoPage {
     if(this.loaderActive) {
       this.finishLoading();
     }
+    this.resultado = '';
     //aqui me deberia cargar todos los tensores si hay no? llamo al servicio y que se los cargue
   }
 
