@@ -177,6 +177,9 @@ export class HomePage {
     // console.log(this.image);
 
     await this.predictionService.setFoto(this.image);
+    if(this.flashActive){
+      await this.cambiarEstadoFlash();
+    }
     this.router.navigate(['/resultado']);
   }
     // } catch (error) {

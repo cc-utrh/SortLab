@@ -13,7 +13,7 @@ import { PredictionService } from '../services/prediction.service';
 })
 export class ResultadoPage {
   public fotoCapturada: String;
-  public resultado='';
+  public resultado: String = "";
   private loaderActive = false;
   confirmed = false;
 
@@ -39,7 +39,9 @@ export class ResultadoPage {
   async hacerInferencia() {
     console.log("🚀 ~ file: resultado.page.ts:34 ~ ResultadoPage ~ hacerInferencia ~ hacerInferencia:")
 
-    this.predictionService.predict();
+    let res = await this.predictionService.predict();
+    this.resultado = 'Creo que se puede tratar de un '+res;
+    this.finishLoading();
 
     // this.predictionService.getResultado().subscribe((res) => {
     //   if(res){

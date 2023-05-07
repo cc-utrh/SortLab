@@ -59,20 +59,27 @@ export class PredictionService {
   // }
 
   async cargarModelo(modelPath: string) {
-    tf.env().set('WEBGL_PACK', false);
+    console.log("🚀 ~ file: prediction.service.ts:62 ~ PredictionService ~ cargarModelo ~ modelPath:", modelPath)
+    // tf.env().set('WEBGL_PACK', false);
+    try {
+      console.log("🚀 ~ file: prediction.service.ts:62 ~ PredictionService ~ cargarModelo ~ cargarModelo:")
 
-    const model = await tf.loadGraphModel(modelPath);
-    console.log(`El modelo de ${modelPath} se ha cargado`);
-    const inputShape = model.inputs[0].shape;
-    if (inputShape) {
-      this.imgHeight = inputShape[1];
-      this.imgWidth = inputShape[2];
+      const model = await tf.loadGraphModel(modelPath);
+      console.log(`El modelo de ${modelPath} se ha cargado`);
+      const inputShape = model.inputs[0].shape;
+      if (inputShape) {
+        this.imgHeight = inputShape[1];
+        this.imgWidth = inputShape[2];
+      }
+
+      console.log('Al cargar el modelo numTensors : ' + tf.memory().numTensors);
+      console.log('Al cargar el modelo numBytes : ' + tf.memory().numBytes);
+      return model;
+    } catch (err) {
+      console.error('Error en la carga del modelo: ', err);
+      return null
     }
 
-    console.log('Al cargar el modelo numTensors : ' + tf.memory().numTensors);
-    console.log('Al cargar el modelo numBytes : ' + tf.memory().numBytes);
-
-    return model;
   }
 
   async setFoto(fotoCapturada:String) {
@@ -225,10 +232,15 @@ export class PredictionService {
   }
 
   async predict() {
-      console.log("🚀 ~ file: prediction.service.ts:141 ~ PredictionService ~ predict ~ predict:");
+    let prediccion = '';
+    console.log("🚀 ~ file: prediction.service.ts:141 ~ PredictionService ~ predict ~ predict:");
     try{
       if(!this.materialFormModel){
-        this.materialFormModel = await this.cargarModelo(environment.material_form_model_path);
+        let  materialForm = await this.cargarModelo(environment.material_form_model_path);
+        if(materialForm){
+          this.materialFormModel = materialForm;
+          materialForm.dispose();
+        }
       }
 
       let finalImageTensor = await this.imagenPreprocesada();
@@ -241,9 +253,9 @@ export class PredictionService {
       // const image_info = await resultado[0].data();
       // const detection_boxes = await resultado[1].data();
       // const detection_masks = await resultado[2].data();
-      const num_detectionsF = await resultadoForma[3].array();
-      const detection_scoresF = await resultadoForma[4].array();
-      const detection_classesF = await resultadoForma[5].array();
+      const detection_classesF = await resultadoForma[3].data();
+      const detection_scoresF = await resultadoForma[4].data();
+      const num_detectionsF = await resultadoForma[5].data();
 
       // console.log(resultado[5].array());
       // resultado[5].array().then(data => console.log('Detection classes como array: '+data));
@@ -259,9 +271,18 @@ export class PredictionService {
       console.log('Antes del dispose numBytes : ' + tf.memory().numBytes);
 
       resultadoForma.map((t: { dispose: () => any; }) => t.dispose());
-
       finalImageTensor.dispose();
       tf.dispose(resultadoForma);
+
+      //elegir minimo de detection_scores ponerle
+      // num_detectionsF[0]===0||detection_scoresF[0]<0.8
+      if(num_detectionsF[0]===0){
+        prediccion = 'No detecto un residuo en la imagen'
+      }else{
+        prediccion = detection_classesF[0].toString();
+        //si es de las clases que podrian ser de varios materiales correr el segundo modelo
+      }
+
       tf.disposeVariables();
       // this.materialFormModel.dispose();
       // console.log("🚀 ~ file: prediction.service.ts:266 ~ PredictionService ~ predict ~ this.materialFormModel:", this.materialFormModel)
@@ -275,6 +296,8 @@ export class PredictionService {
       console.log("Error al ejecutar el modelo", error);
     }
 
+    return prediccion;
+
   }
 
 
@@ -287,6 +310,15 @@ export class PredictionService {
       }, 5000);
     })
     return res;
+  }
+
+  limpioTensores() {
+    if(this.materialFormModel){
+      this.materialFormModel.dispose();
+    }
+    if(this.materialModel) {
+      this.materialModel.dispose();
+    }
   }
 
 
