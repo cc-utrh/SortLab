@@ -8,13 +8,16 @@ ion-content {
   text-align: center;
 }
 
+img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
 ion-button {
   position: absolute;
   z-index: 20;
-}
-
-.texto-confirmar, .resultado{
-  color: black;
 }
 
 #close {
@@ -25,7 +28,7 @@ ion-button {
 }
 
 #confirm {
-  bottom: 50px;
+  bottom: 150px;
   left: calc(50% - 25px);
   width: 50px;
   height: 50px;
@@ -35,10 +38,25 @@ ion-button {
   border-radius: 30px;
 }
 
+.texto-confirmar, .resultado{
+  display: block;
+  position: absolute;
+  top: 61%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: black;
+  z-index: 20;
+  min-width: 300px;
+}
 
+.texto-confirmar{
+  font-size: large;
+}
 
 .loading {
-  display: flex;
+  position: absolute;
+  top: 61%;
+  left: 50%;
   justify-content: center;
 }
 

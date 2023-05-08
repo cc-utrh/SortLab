@@ -10,7 +10,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "run android": "ionic cap run android -l --external"
+    "run live": "ionic cap run android -l --external",
+    "run once": "ionic cap run android --external"
   },
   "private": true,
   "dependencies": {

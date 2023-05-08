@@ -60,7 +60,7 @@ export class HomePage {
   }
 
   // ngOnInit() {
-  //   this.predictionService.initialize();
+  //   this.predictionService.cargarModelo(environment.material_model_path);
   // }
 
   async ngAfterViewInit(){

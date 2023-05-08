@@ -18,10 +18,9 @@
 
   <img [src]="fotoCapturada" id="fotoCapturada">
   <p *ngIf="!confirmed" class="texto-confirmar">¿quieres usar esta foto?</p>
-
   <ion-button *ngIf="!confirmed" (click)="confirmImage()" color="principal" expand="block" id="confirm">
     <ion-icon name="checkmark-sharp" slot="icon-only" ></ion-icon>
   </ion-button>
 
-  <p class="resultado">{{resultado}}</p>
+  <!-- <p class="resultado">{{resultado}}</p> -->
 </ion-content>
