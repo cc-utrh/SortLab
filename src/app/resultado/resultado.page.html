@@ -9,11 +9,16 @@
     <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
   </ion-button>
 
-  <!-- spinner -->
+  <!-- spinner
   <div *ngIf="confirmed" class="loading">
     <div class="spinner-border">
       <span id="spinner"></span>
     </div>
+  </div> -->
+
+  <div *ngIf="confirmed" class="loaderDiv">
+    <div class="loader" id="spinner"></div>
+    <p class="texto-cargando">cargando...</p>
   </div>
 
   <img [src]="fotoCapturada" id="fotoCapturada">

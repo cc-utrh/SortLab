@@ -301,9 +301,10 @@ export class PredictionService {
 
       console.log('Calculo el resultado con el primer modelo');
       if(modelo){
-        let resultado = await modelo.executeAsync(finalImageTensor) as tf.Tensor[];
+        //no quiero memory leak
+        // let resultado = await modelo.executeAsync(finalImageTensor) as tf.Tensor[];
         modelo.dispose();
-        tf.dispose(resultado);
+        // tf.dispose(resultado);
       }
 
       tf.dispose(finalImageTensor);

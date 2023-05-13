@@ -63,7 +63,7 @@ export class ResultadoPage {
   }
 
   finishLoading() {
-    let loader = document.getElementById('spinner')
+    let loader = document.querySelector<HTMLElement>('.loaderDiv')
     if(loader){
       loader.style.display = 'none';
     }
