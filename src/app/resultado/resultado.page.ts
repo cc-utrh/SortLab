@@ -73,8 +73,8 @@ export class ResultadoPage {
     let prediccionObtenida = this.resultado
     const modal = await this.modalCtrl.create({
       component: ModalPage,
-      breakpoints: [0, 0.3, 0.5],
-      initialBreakpoint: 0.5,
+      breakpoints: [0, 0.4, 0.6],
+      initialBreakpoint: 0.4,
       handle: true,
       componentProps: {
         prediccionObtenida
