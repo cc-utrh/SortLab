@@ -17,6 +17,10 @@ export class ResultadoPage {
   public resultado: String = "";
   private loaderActive = false;
   confirmed = false;
+  textoCarga = '';
+  textos = ['detectando residuo...', 'identificando material...', 'buscando el contenedor adecuado...', '¡el planeta te da las gracias!']
+  indice = 0;
+  idTimeOut: any;
 
   constructor(private predictionService:PredictionService, private navCtrl:NavController, private modalCtrl: ModalController) {
     this.fotoCapturada = this.predictionService.getFoto();
@@ -27,10 +31,22 @@ export class ResultadoPage {
     if(response){
       let confirmar = await this.setConfirmed();
       if(confirmar)
+        this.rotacionTextos();
         this.hacerInferencia();
 
     }
   }
+
+  rotacionTextos(){
+    this.textoCarga = this.textos[this.indice];
+    this.indice = (this.indice + 1) % this.textos.length;
+    this.idTimeOut = setTimeout(() => this.rotacionTextos(), 4000);
+  }
+
+  pararTextos() {
+    clearTimeout(this.idTimeOut);
+  }
+
 
   setConfirmed() {
     this.confirmed = true;
@@ -67,6 +83,7 @@ export class ResultadoPage {
     if(loader){
       loader.style.display = 'none';
     }
+    this.pararTextos();
   }
 
   async presentModal() {

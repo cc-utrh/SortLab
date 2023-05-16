@@ -18,7 +18,7 @@
 
   <div *ngIf="confirmed" class="loaderDiv">
     <div class="loader" id="spinner"></div>
-    <p class="texto-cargando">cargando...</p>
+    <p class="texto-cargando">{{textoCarga}}</p>
   </div>
 
   <img [src]="fotoCapturada" id="fotoCapturada">
