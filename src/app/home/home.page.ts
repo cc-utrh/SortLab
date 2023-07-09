@@ -1,19 +1,22 @@
 import { AfterViewInit, Component, NgZone, Optional } from '@angular/core';
-import { IonicModule, Platform, IonRouterOutlet } from '@ionic/angular';
+import { IonicModule, Platform, IonRouterOutlet, ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Camera } from '@capacitor/camera';
 import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions} from '@capacitor-community/camera-preview';
 import { App } from '@capacitor/app';
 import { PredictionService } from '../services/prediction.service';
 import { Subscription } from 'rxjs';
+import { ModalPage } from '../modal/modal.page';
+
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 
 export class HomePage {
@@ -31,7 +34,7 @@ export class HomePage {
   resumeListener: Subscription = new Subscription();
   // pauseListener: Subscription = new Subscription();
 
-  constructor(public ngZone: NgZone, private predictionService:PredictionService, private platform: Platform, private router:Router, @Optional() private routerOutlet?: IonRouterOutlet) {
+  constructor(public ngZone: NgZone, private predictionService:PredictionService, private platform: Platform, private router:Router, private modalCtrl: ModalController, @Optional() private routerOutlet?: IonRouterOutlet) {
 
     this.permisoActual = '';
 
@@ -62,6 +65,28 @@ export class HomePage {
   // ngOnInit() {
   //   this.predictionService.cargarModelo(environment.material_model_path);
   // }
+
+  async presentModal() {
+    let titulo = 'Sobre SortLab'
+    let texto = 'Consulta dónde reciclar un residuo a partir de su imagen';
+    let imagen = '../../assets/material_icons/sortlab_bw.png';
+    let indicaciones = true;
+
+    const modal = await this.modalCtrl.create({
+      component: ModalPage,
+      breakpoints: [0, 0.8],
+      initialBreakpoint: 0.8,
+      handle: true,
+      componentProps: {
+        titulo,
+        texto,
+        imagen,
+        indicaciones
+      },
+      cssClass: 'custom-modal',
+    });
+    await modal.present();
+  }
 
   async ngAfterViewInit(){
     console.log("🚀 ~ file: home.page.ts:68 ~ HomePage ~ ngAfterViewInit:")
@@ -139,7 +164,8 @@ export class HomePage {
   }
 
   showHelp(){
-    console.log('Modal ayuda');
+    // console.log('Modal ayuda');
+    this.presentModal();
     // this.stopCamera();
   }
 
@@ -203,6 +229,8 @@ export class HomePage {
   ngOnDestroy(){
     console.warn("🚀 ~ file: home.page.ts:283 ~ ngOnDestroy ~ ngOnDestroy:")
     this.resumeListener.unsubscribe();
+
+    // this.modalCtrl.dismiss();
 
     // this.stopCamera();
     // this.pauseListener.unsubscribe();

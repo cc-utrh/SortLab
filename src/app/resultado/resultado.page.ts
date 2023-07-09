@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, NavController, ModalController } from '@ionic/angular';
 import { PredictionService } from '../services/prediction.service';
 import { ModalPage } from '../modal/modal.page';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-resultado',
@@ -14,15 +15,22 @@ import { ModalPage } from '../modal/modal.page';
 })
 export class ResultadoPage {
   public fotoCapturada: String;
-  public resultado: String = "";
   private loaderActive = false;
   confirmed = false;
+
   textoCarga = '';
-  textos = ['detectando residuo...', 'identificando material...', 'buscando el contenedor adecuado...', '¡el planeta te da las gracias!']
+  textos = ['detectando residuo...', 'identificando material...', 'buscando el mejor contenedor...', '¡el planeta te da las gracias!']
   indice = 0;
   idTimeOut: any;
 
-  constructor(private predictionService:PredictionService, private navCtrl:NavController, private modalCtrl: ModalController) {
+  public titulo: String = '';
+  public mensaje: String = '';
+  public haFuncionado: Boolean = true;
+  public ejemplos: String = '';
+  public contenedor: String = '';
+  public img: String = '';
+
+  constructor(private predictionService:PredictionService, private navCtrl:NavController, private router:Router, private modalCtrl: ModalController) {
     this.fotoCapturada = this.predictionService.getFoto();
   }
 
@@ -57,20 +65,33 @@ export class ResultadoPage {
     console.log("🚀 ~ file: resultado.page.ts:34 ~ ResultadoPage ~ hacerInferencia ~ hacerInferencia:")
 
     let res = await this.predictionService.predict();
-    this.resultado = res;
+    if(typeof res === 'number') {
+      //no ha funcinado porque no ha devuelto material, antes comprobaba que fuera <1
+      this.haFuncionado = false;
+      this.titulo = 'Algo ha salido mal...';
+      if(res===-1){
+        this.mensaje = 'He detectado más de un residuo en la imagen. ';
+      }else if(res===0){
+        this.mensaje = 'No he detectado un residuo en la imagen. ';
+      }
+      this.mensaje += 'Prueba otra vez.'
+    }else{
+      // this.mensaje = res.toString();
+      // ha funcionado y tengo el material
+      this.mensaje = res.name
+      this.ejemplos = res.examples;
+      this.contenedor = res.container;
+      this.img = res.icon;
+      // console.log(res.name);
+      // console.log(res.examples);
+      // console.log(res.container);
+    }
+
     await this.finishLoading();
     this.presentModal();
 
 
 
-    // this.predictionService.getResultado().subscribe((res) => {
-    //   if(res){
-    //     this.finishLoading();
-    //     this.loaderActive = false;
-    //   }
-    //   console.log(res);
-    //   this.resultado = res;
-    // });
   }
 
   goBack(){
@@ -87,27 +108,51 @@ export class ResultadoPage {
   }
 
   async presentModal() {
-    let prediccionObtenida = this.resultado
+    let titulo = this.titulo;
+    let texto = this.mensaje;
+    let imagen = '../../assets/material_icons/'
+    let resultado = this.haFuncionado;
+    let ejemplos = this.ejemplos;
+    let contenedor = this.contenedor;
+
+    if(!this.haFuncionado){
+      imagen += 'error.png';
+    }else{
+      imagen += this.img;
+    }
+
+    //podria lit crear el modal con unos breakpoints segun
+
     const modal = await this.modalCtrl.create({
       component: ModalPage,
-      breakpoints: [0, 0.4, 0.6],
-      initialBreakpoint: 0.4,
+      breakpoints: [0, 0.55, 0.7],
+      initialBreakpoint: 0.55,
       handle: true,
       componentProps: {
-        prediccionObtenida
+        titulo,
+        texto,
+        imagen,
+        resultado,
+        ejemplos,
+        contenedor
       },
       cssClass: 'custom-modal',
     });
     await modal.present();
+    this.finishLoading();
+
+    modal.onDidDismiss().then((_ => {
+      this.router.navigate(['/home']);
+    }));
   }
 
   ngOnDestroy() {
+    // this.modalCtrl.dismiss();
     if(this.loaderActive) {
       this.finishLoading();
     }
-    this.resultado = '';
-    // this.predictionService.limpioTensores();
-    //aqui me deberia cargar todos los tensores si hay no? llamo al servicio y que se los cargue
+    // this.haFuncionado = false;
+    this.mensaje = "";
   }
 
 }

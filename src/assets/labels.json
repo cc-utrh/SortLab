@@ -1,0 +1,71 @@
+{
+  "1": {
+    "name": "Escombros",
+    "examples": "Tierra, trozos de hormigón y piedras",
+    "container": "Punto limpio",
+    "icon": "escombros.png"
+  },
+
+  "2": {
+    "name": "Textiles",
+    "examples": "Ropa, sábanas y toallas",
+    "container": "Contenedor de textiles",
+    "icon": "textiles.png"
+  },
+
+  "3": {
+    "name": "Goma o cuero",
+    "examples": "Prendas de vestir, calzado o neumáticos",
+    "container": "Punto limpio o en los contenedores de textiles en el caso de las prendas de vestir",
+    "icon": "goma.png"
+  },
+
+  "4": {
+    "name": "Madera",
+    "examples": "Muebles, cajas o palés",
+    "container": "Punto limpio. Tu administración local también debe facilitar su recogida a demanda",
+    "icon": "madera.png"
+  },
+
+  "5": {
+    "name": "Alimentos",
+    "examples": "Restos de comestibles o servilletas usadas",
+    "container": "Contenedor gris",
+    "icon": "alimentos.png"
+  },
+
+  "6": {
+    "name": "Plástico",
+    "examples": "Bolsas, envases, latas, briks, botellas, recipientes, tapas, tapones, utensilios",
+    "container": "Contenedor amarillo",
+    "icon": "plastico.png"
+  },
+
+  "7": {
+    "name": "Poda",
+    "examples": "Plantas, hierba, hojas y maleza",
+    "container": "Contenedor gris si es poca cantidad. Si no, en el punto limpio. Tu administración local también debe facilitar la recogida a demanda.",
+    "icon": "poda.png"
+  },
+
+  "8": {
+    "name": "Cartón",
+    "examples": "Papel, periódicos, cajas y bolsas de cartón",
+    "container": "Contenedor azul",
+    "icon": "carton.png"
+  },
+
+  "9": {
+    "name": "Vidrio",
+    "examples": "Botellas de cerveza, refrescos, vino, licores, tarros para alimentos, cosméticos u otros productos",
+    "container": "Contenedor verde",
+    "icon": "vidrio.png"
+  },
+
+  "10": {
+    "name": "Metal",
+    "examples": "Envases y embalajes metálicos, electrodomésticos, pilas y aparatos electrónicos",
+    "container": "Contenedor amarillo si es un envase o embalaje. Las pilas y aparatos electrónicos tienen sus propios contenedores o puedes depositarlos en un punto limpio.",
+    "icon": "metal.png"
+  }
+}
