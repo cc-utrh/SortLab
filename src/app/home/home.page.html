@@ -1,11 +1,3 @@
-<!-- <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      {{titulo}}
-    </ion-title>
-  </ion-toolbar>
-</ion-header> -->
-
 <ion-content [fullscreen]="true" [ngStyle]="{'background-color': !cameraActive ? 'var(--ion-color-principal)' : 'transparent'}">
   <div id="cameraPreview" class="cameraPreview">
       <ion-button [disabled]="!cameraActive" (click)="cambiarEstadoFlash()" color="principal" expand="block" id="flash">
@@ -27,8 +19,3 @@
 
  </div>
 </ion-content>
-<!-- <div id="container">
-  <strong>Predicted: {{prediccion}}</strong>
-  <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  <ion-button (click)=prediceWebWorker()>Pruebo a predecir</ion-button>
-</div> -->

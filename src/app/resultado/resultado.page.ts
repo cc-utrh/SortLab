@@ -66,7 +66,6 @@ export class ResultadoPage {
 
     let res = await this.predictionService.predict();
     if(typeof res === 'number') {
-      //no ha funcinado porque no ha devuelto material, antes comprobaba que fuera <1
       this.haFuncionado = false;
       this.titulo = 'Algo ha salido mal...';
       if(res===-1){
@@ -76,21 +75,14 @@ export class ResultadoPage {
       }
       this.mensaje += 'Prueba otra vez.'
     }else{
-      // this.mensaje = res.toString();
-      // ha funcionado y tengo el material
       this.mensaje = res.name
       this.ejemplos = res.examples;
       this.contenedor = res.container;
       this.img = res.icon;
-      // console.log(res.name);
-      // console.log(res.examples);
-      // console.log(res.container);
     }
 
     await this.finishLoading();
     this.presentModal();
-
-
 
   }
 
@@ -121,8 +113,6 @@ export class ResultadoPage {
       imagen += this.img;
     }
 
-    //podria lit crear el modal con unos breakpoints segun
-
     const modal = await this.modalCtrl.create({
       component: ModalPage,
       breakpoints: [0, 0.55, 0.7],
@@ -147,11 +137,11 @@ export class ResultadoPage {
   }
 
   ngOnDestroy() {
-    // this.modalCtrl.dismiss();
+
     if(this.loaderActive) {
       this.finishLoading();
     }
-    // this.haFuncionado = false;
+
     this.mensaje = "";
   }
 

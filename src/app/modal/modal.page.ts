@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ModalController, NavController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { IonicModule, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-modal',
@@ -34,20 +33,6 @@ export class ModalPage implements OnInit {
         img.src = this.imagen;
       }
     }
-
-    // if(this.resultado===true) {
-    //   let modal = document.querySelector('app-modal>ion-content');
-    //   let h3 = document.createElement('h3');
-    //   h3.textContent = 'Debes depositarlo en';
-    //   h3.style.color = 'black';
-    //   h3.style.textAlign = 'center';
-
-    //   modal?.appendChild(h3);
-    //   //tengo que poner subtitulo de ejemplos o en text
-    //   //subtitulo de debes depositarlo en
-    //   //texto contenedor
-
-    // }
 
   }
 

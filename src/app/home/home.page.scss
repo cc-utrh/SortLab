@@ -1,6 +1,5 @@
 ion-content {
   font-family: 'Rubik' !important;
-  // background-color: var(--ion-color-secundario);
   --background: transparent !important;
 }
 
@@ -53,9 +52,6 @@ ion-button {
   position: absolute;
   top:50%;
   transform: translate(-50%, -50%);
-  //35% del input del modelo pero mantiene el ratio
-  // width: 358.4px;
-  // height: 179.2px;
   width:300px;
   height: 500px;
   z-index: 10;
@@ -76,7 +72,6 @@ ion-button {
 .texto-capture-box {
   display: block;
   position: absolute;
-  // top: 61%;
   top: 74%;
   left: 50%;
   transform: translateX(-50%);
@@ -84,33 +79,3 @@ ion-button {
   z-index: 20;
   min-width: 300px;
 }
-
-//esto era default de ionic
-
-// #container {
-//   text-align: center;
-
-//   position: absolute;
-//   left: 0;
-//   right: 0;
-//   top: 50%;
-//   transform: translateY(-50%);
-// }
-
-// #container strong {
-//   font-size: 20px;
-//   line-height: 26px;
-// }
-
-// #container p {
-//   font-size: 16px;
-//   line-height: 22px;
-
-//   color: #8c8c8c;
-
-//   margin: 0;
-// }
-
-// #container a {
-//   text-decoration: none;
-// }

@@ -1,9 +1,3 @@
-<!-- <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>modal</ion-title>
-  </ion-toolbar>
-</ion-header> -->
-
 <ion-content [fullscreen]="true" style="border-radius: 30px;">
   <h1>{{titulo}}</h1>
 
@@ -24,7 +18,6 @@
         <li>Asegúrate de que solo aparezca un objeto en la imagen</li>
       </ul>
       <h4>Avisos</h4>
-      <!-- <p class="aviso">SortLab sigue las indicaciones generales para la clasificación de los residuos en España, que se pueden consultar <a href="https://www.ecoembes.com/es/reduce-reutiliza-y-recicla/que-tirar-en-cada-contenedor">aquí</a></p> -->
       <ul>
         <li>SortLab proporciona indicaciones generales para la clasificación de los residuos en España, que se pueden consultar <a href="https://www.ecoembes.com/es/reduce-reutiliza-y-recicla/que-tirar-en-cada-contenedor">aquí</a></li>
         <li>En ocasiones puede generar información incorrecta</li>
@@ -35,7 +28,6 @@
 
   <div *ngIf="resultado===true">
     <div class="ejemplos">
-      <!-- <p>Ejemplos de residuos de este tipo son: <br> {{ejemplos}}</p> -->
       <p>{{ejemplos}}</p>
   </div>
 
@@ -43,8 +35,6 @@
       <h3>Depositar en</h3>
       <p>{{contenedor}}</p>
   </div>
-    <!-- <h3>Debes depositarlo en el</h3> -->
-    <!-- <h3>Se deposita en</h3> -->
 
   </div>
 </ion-content>

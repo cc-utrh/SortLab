@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, NgZone, Optional } from '@angular/core';
+import { Component, NgZone, Optional } from '@angular/core';
 import { IonicModule, Platform, IonRouterOutlet, ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -22,7 +22,6 @@ import { ModalPage } from '../modal/modal.page';
 export class HomePage {
 
   public modelo:any;
-  // public worker;
 
   image:any;
   cameraActive = false;
@@ -30,9 +29,7 @@ export class HomePage {
 
   permisoActual:String;
 
-  // resumeSubscription: Subscription;
   resumeListener: Subscription = new Subscription();
-  // pauseListener: Subscription = new Subscription();
 
   constructor(public ngZone: NgZone, private predictionService:PredictionService, private platform: Platform, private router:Router, private modalCtrl: ModalController, @Optional() private routerOutlet?: IonRouterOutlet) {
 
@@ -49,22 +46,7 @@ export class HomePage {
       }
     });
 
-    // this.platform.pause.subscribeWithPriority(-1, () => {
-    //   // if (!this.routerOutlet?.canGoBack()) {
-    //     App.exitApp();
-    //   // }
-    // });
-
-    // this.pauseListener = this.platform.pause.subscribe(async () => {
-    //   console.log('pause');
-    //   // this.launchCamera();
-    // });
-
   }
-
-  // ngOnInit() {
-  //   this.predictionService.cargarModelo(environment.material_model_path);
-  // }
 
   async presentModal() {
     let titulo = 'Sobre SortLab'
@@ -74,8 +56,8 @@ export class HomePage {
 
     const modal = await this.modalCtrl.create({
       component: ModalPage,
-      breakpoints: [0, 0.8],
-      initialBreakpoint: 0.8,
+      breakpoints: [0, 0.9],
+      initialBreakpoint: 0.9,
       handle: true,
       componentProps: {
         titulo,
@@ -105,8 +87,6 @@ export class HomePage {
         }
         this.permisoActual = answer.camera
       }
-
-      // this.predictionService.initialize();
 
     } catch (error) {
       console.error(error);
@@ -138,7 +118,7 @@ export class HomePage {
   }
 
 
-  //cuando vuelva
+  //cuando vuelva a la aplicacion
   async cameBack(){
     console.log('resumo');
 
@@ -164,9 +144,7 @@ export class HomePage {
   }
 
   showHelp(){
-    // console.log('Modal ayuda');
     this.presentModal();
-    // this.stopCamera();
   }
 
 
@@ -192,151 +170,25 @@ export class HomePage {
   }
 
   async captureImage() {
-    // try {
-    //   if(this.predictionService.checkModels()){
     const cameraPreviewPictureOptions: CameraPreviewPictureOptions = {
       quality: 100
     };
+
     const result = await CameraPreview.capture(cameraPreviewPictureOptions);
-    //no se si necesito esto o no
     this.image = `data:image/jpeg;base64,${result.value}`;
-    // console.log(this.image);
 
     await this.predictionService.setFoto(this.image);
+
     if(this.flashActive){
       await this.cambiarEstadoFlash();
     }
+
     this.router.navigate(['/resultado']);
   }
-    // } catch (error) {
-    //   console.log("Error capturando la imagen:", error)
-    // }
-
-    // this.prediceWebWorker(this.image)
-
-
-      //esto no lo tengo yo tan claro
-      // this.stopCamera();
-      // this.cameraActive = false;
-    // }
-
-  // public prediceWebWorker(){
-  //   if(this.worker!=undefined){
-  //     this.worker.postMessage(this.image)
-  //   }
-  // }
 
   ngOnDestroy(){
     console.warn("🚀 ~ file: home.page.ts:283 ~ ngOnDestroy ~ ngOnDestroy:")
     this.resumeListener.unsubscribe();
-
-    // this.modalCtrl.dismiss();
-
-    // this.stopCamera();
-    // this.pauseListener.unsubscribe();
   }
 
-    // if(this.cameraActive){
-    //   await this.stopCamera();
-    //   !this.cameraActive;
-    // }
-
-    // console.log("🚀 ~ file: home.page.ts:77 ~ HomePage ~ cameBack ~ permissions:", permissions)
-    // // console.log("🚀 ~ file: home.page.ts:72 ~ HomePage ~ cameBack ~ permissions:", permissions)
-    // // console.log("🚀 ~ file: home.page.ts:80 ~ HomePage ~ cameBack ~ this.permisoActual!==permissions:", this.permisoActual!==permissions)
-    // console.log("🚀 ~ file: home.page.ts:80 ~ HomePage ~ cameBack ~ permisoActual:", this.permisoActual);
-
-    // console.log("🚀 ~ file: home.page.ts:82 ~ HomePage ~ cameBack ~ cameraActive:", this.cameraActive);
-
-
-
-
-    // if(this.permisoActual!==permissions) {
-
-    //   window.location.reload();
-    // }
-    // if(permissions==='granted'){
-    //   console.log('granted');
-    //   window.location.reload();
-    // }
-    // window.location.reload();
-    // if(permissions==='granted'){
-    //   window.location.reload();
-    // }
-
-    // let permissions = await this.checkPermissions();
-    // console.log("🚀 ~ file: home.page.ts:51 ~ HomePage ~ ngAfterViewInit ~ permissions:", permissions)
-
-    // if(permissions==='granted'){
-    //   this.launchCamera();
-    // }
-
-    // if(permissions!=='granted'){
-    //   let answer = await Camera.requestPermissions();
-    //   console.log("🚀 ~ file: home.page.ts:71 ~ HomePage ~ cameBack ~ answer:", answer)
-    //   if(answer.camera==='granted'){
-    //     await this.launchCamera();
-    //   }
-    // }else{
-    //   await this.launchCamera();
-    // }
-
-//}
-
-  // async isCameraAvailable() {
-  //   console.log('está disponible la cámara?');
-  //   let available = false;
-  //   const permissions = await Camera.checkPermissions();
-  //   console.log(permissions.camera);
-  //   if(permissions.camera==='granted'){
-  //     available = true;
-  //   }
-  //   return available;
-  // }
-  // async ngOnInit() {
-  //   try {
-  //     const isCameraAvailable = await this.isCameraAvailable();
-
-  //     if (isCameraAvailable) {
-  //       console.log('hago launch');
-  //       this.launchCamera();
-  //     }else{
-  //       const request = await Camera.requestPermissions();
-  //       console.log(request);
-  //       if(request.camera===){
-  //         this.launchCamera();
-  //       }
-  //     }
-  //   }catch (error) {
-  //     console.error(error);
-  //   }
-  //   // await this.launchCamera();
-
-  //   // try  {
-  //   //   await this.launchCamera();
-  //   // }catch (err) {
-  //   //   console.error('Error iniciando preview de la camara: ', err)
-  //   // }
-  // }
-
-
-  // ionViewWillEnter(){
-  //   console.warn('did enter');
-  // }
-
-  // ionViewDidLeave(){
-  //   console.warn('did leave');
-  // }
-
-  // async checkPermissionsChanged() {
-  //   try {
-  //     const isCameraAvailable = await this.isCameraAvailable();
-  //     if (!this.cameraActive && isCameraAvailable) {
-  //       console.log('llamo a launch desde check');
-  //       this.launchCamera();
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
 }
