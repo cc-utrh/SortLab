@@ -1,0 +1,17 @@
+<ion-content [fullscreen]="true">
+  <ion-button (click)="goBack()" color="principal" expand="block" id="close">
+    <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+  </ion-button>
+
+  <div *ngIf="confirmed" class="loaderDiv">
+    <div class="loader" id="spinner"></div>
+    <p class="texto-cargando">{{textoCarga}}</p>
+  </div>
+
+  <img [src]="fotoCapturada" id="fotoCapturada">
+  <p *ngIf="!confirmed" class="texto-confirmar">¿quieres usar esta foto?</p>
+  <ion-button *ngIf="!confirmed" (click)="confirmImage()" color="principal" expand="block" id="confirm">
+    <ion-icon name="checkmark-sharp" slot="icon-only" ></ion-icon>
+  </ion-button>
+
+</ion-content>

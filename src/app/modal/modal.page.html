@@ -1,0 +1,40 @@
+<ion-content [fullscreen]="true" style="border-radius: 30px;">
+  <h1>{{titulo}}</h1>
+
+  <div *ngIf="imagen" class="image-container">
+    <img src={{imagen}} id="imagen-modal">
+  </div>
+
+  <p [ngClass]="resultado===true ? 'material' : 'texto-error'">{{texto}}</p>
+
+  <div *ngIf="indicaciones===true" class="indicaciones">
+    <div class="consejos">
+      <h4>Consejos</h4>
+      <ul>
+        <li>Comprueba que la aplicación tiene acceso a tu cámara</li>
+        <li>Haz la foto en un lugar bien iluminado, utiliza el flash si es necesario </li>
+        <li>Evita que haya reflejos en la imagen</li>
+        <li>Coloca el residuo en el centro de la pantalla, preferiblemente sobre un fondo liso</li>
+        <li>Asegúrate de que solo aparezca un objeto en la imagen</li>
+      </ul>
+      <h4>Avisos</h4>
+      <ul>
+        <li>SortLab proporciona indicaciones generales para la clasificación de los residuos en España, que se pueden consultar <a href="https://www.ecoembes.com/es/reduce-reutiliza-y-recicla/que-tirar-en-cada-contenedor">aquí</a></li>
+        <li>En ocasiones puede generar información incorrecta</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <div *ngIf="resultado===true">
+    <div class="ejemplos">
+      <p>{{ejemplos}}</p>
+  </div>
+
+  <div class="depositar">
+      <h3>Depositar en</h3>
+      <p>{{contenedor}}</p>
+  </div>
+
+  </div>
+</ion-content>
